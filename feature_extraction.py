@@ -54,8 +54,8 @@ for filename in os.listdir(path) :
             continue
 
         stream_data = line.split("\t")
-        break;
-        '''jsonObj = json.loads(stream_data[1])
+        #data from twitter is stored in json format in jsonOject file        
+        jsonObj = json.loads(stream_data[1])
         lang=jsonObj["lang"]
         hashtags=jsonObj["entities"]["hashtags"]
         id=str(jsonObj["id"])
@@ -63,15 +63,21 @@ for filename in os.listdir(path) :
         isRetweeted = jsonObj["retweeted"]
         #processing of  english tweets
         if lang=="en" : 
+            #print raw_text
             tmp_text = preprocess_text(raw_text) #removes hashtag url and username
+            #print tmp_text            
             #remove stopwords            
             pruned_text = ' '.join([word for word in tmp_text.split() if word not in en_stop_words])
             #if pruned text is not empty
+            print pruned_text
             if(pruned_text!='') : 
                 # don't consider many ids have same text, overwrite previous ids sharing same text, save the last id
                 enTweet_ID_dict[pruned_text]=id
+                #make a dictionary of hashtags present in a partcular id of tweet
+                #if there is not hashtag in the tweet then just insert notag
                 if hashtags == [] : 
                     enID_hashtag_dict[id] = "notag"
+                #if there is any hashtag present in the tweet 
                 if hashtags != [] : 
                     enID_hashtag_dict[id]=set()
                     for hashtagObj in hashtags : 
@@ -83,26 +89,3 @@ for filename in os.listdir(path) :
                             hashtag_dict[hashtag][lang]= set()
                         if not isRetweeted : 
                             hashtag_dict[hashtag][lang].add(id)
-        #added the preprocessing for spanish tweets 
-        if lang=="es" : 
-            tmp_text = preprocess_text(raw_text) #removes hashtag url and username
-            #remove stopwords            
-            pruned_text = ' '.join([word for word in tmp_text.split() if word not in en_stop_words])
-            #if pruned text is not empty
-            if(pruned_text!='') : 
-                # don't consider many ids have same text, overwrite previous ids sharing same text, save the last id
-                enTweet_ID_dict[pruned_text]=id
-                if hashtags == [] : 
-                    enID_hashtag_dict[id] = "notag"
-                if hashtags != [] : 
-                    enID_hashtag_dict[id]=set()
-                    for hashtagObj in hashtags : 
-                        hashtag = hashtagObj["text"]
-                        enID_hashtag_dict[id].add(hashtag)
-                        if hashtag not in hashtag_dict :
-                            hashtag_dict[hashtag]={}
-                        if lang not in hashtag_dict[hashtag] : 
-                            hashtag_dict[hashtag][lang]= set()
-                        if not isRetweeted : 
-                            hashtag_dict[hashtag][lang].add(id)'''
-
