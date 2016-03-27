@@ -11,11 +11,12 @@ path = "C:\Users\lenovo\Desktop\eight_sem_major\\data\\"
 en_stop_words = set(get_stop_words('en'))
 es_stop_words = set(get_stop_words('spanish'))
 
+#ISO 639-1 code for spanish is es
 
 hashtag_dict = {}
 
-print len(en_stop_words)
-print len(es_stop_words)
+print len(en_stop_words)  #174 stop words in english
+print len(es_stop_words)    #308 stop words in spanish
 
 tfidf_vectorizer = TfidfVectorizer(min_df=1,sublinear_tf = True)
 
@@ -36,7 +37,7 @@ def preprocess_text(text) :
     #remove punctuation
     text="".join([ch for ch in text if ch not in string.punctuation])
     return text
-    
+        
     
 
 
@@ -46,18 +47,21 @@ for filename in os.listdir(path) :
     filepath=path+filename
     #open the file in reading mode
     fd=open(filepath,'r')
-    
+    #for each single line in lines file without the whitespace in the right of line
     for line in fd.read().rstrip().split("\n"):
+        
         if line=="" :
             continue
+
         stream_data = line.split("\t")
-        jsonObj = json.loads(stream_data[1])
+        break;
+        '''jsonObj = json.loads(stream_data[1])
         lang=jsonObj["lang"]
         hashtags=jsonObj["entities"]["hashtags"]
         id=str(jsonObj["id"])
         raw_text = jsonObj["text"]
         isRetweeted = jsonObj["retweeted"]
-        
+        #processing of  english tweets
         if lang=="en" : 
             tmp_text = preprocess_text(raw_text) #removes hashtag url and username
             #remove stopwords            
@@ -79,5 +83,26 @@ for filename in os.listdir(path) :
                             hashtag_dict[hashtag][lang]= set()
                         if not isRetweeted : 
                             hashtag_dict[hashtag][lang].add(id)
+        #added the preprocessing for spanish tweets 
+        if lang=="es" : 
+            tmp_text = preprocess_text(raw_text) #removes hashtag url and username
+            #remove stopwords            
+            pruned_text = ' '.join([word for word in tmp_text.split() if word not in en_stop_words])
+            #if pruned text is not empty
+            if(pruned_text!='') : 
+                # don't consider many ids have same text, overwrite previous ids sharing same text, save the last id
+                enTweet_ID_dict[pruned_text]=id
+                if hashtags == [] : 
+                    enID_hashtag_dict[id] = "notag"
+                if hashtags != [] : 
+                    enID_hashtag_dict[id]=set()
+                    for hashtagObj in hashtags : 
+                        hashtag = hashtagObj["text"]
+                        enID_hashtag_dict[id].add(hashtag)
+                        if hashtag not in hashtag_dict :
+                            hashtag_dict[hashtag]={}
+                        if lang not in hashtag_dict[hashtag] : 
+                            hashtag_dict[hashtag][lang]= set()
+                        if not isRetweeted : 
+                            hashtag_dict[hashtag][lang].add(id)'''
 
-print "The number of hashtag in hastag_dict is " + str(len(hashtag_dict))

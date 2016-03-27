@@ -2,11 +2,11 @@ _author_ = "Vivek Ranjan"
 import tweepy
 import time
 
-access_token = "613388113-8ejUHgdlA9q6r62ynGCYbqbaXFmUfbmOtiokt73d"
-access_token_secret = "v1JzuJ4BZqNwZyaM44plxVf3PoLWg37r5h2e9RUFlQzpV"
-consumer_key = "Lnz0Z39FPf5UAShIUWN2IfGn3"
-consumer_secret = "N7xBCyjjiFdqXww69Lb49ABAbimHABBcLJ8zFg9hQChuKvZTPX"
-path="C:\Users\lenovo\Desktop\eight_sem_major\data\\"
+access_token = ""
+access_token_secret = ""
+consumer_key = ""
+consumer_secret = ""
+path="C:\Users\lenovo\Desktop\major2\data\\"
 
 tweet_count = 0
 file_name = ''
