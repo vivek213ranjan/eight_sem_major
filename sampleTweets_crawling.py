@@ -2,10 +2,6 @@ _author_ = "Vivek Ranjan"
 import tweepy
 import time
 
-access_token = ""
-access_token_secret = ""
-consumer_key = ""
-consumer_secret = ""
 path="C:\Users\lenovo\Desktop\major2\data\\"
 
 tweet_count = 0
@@ -27,7 +23,7 @@ def my_on_data(data):
             tweet_count += 1
             if tweet_count % 100 == 0:
                 print tweet_count
-            if tweet_count % 500 == 0:
+            if tweet_count % 5000 == 0:
                 file_name = make_fname()
         except:
             raise
@@ -52,7 +48,7 @@ def main():
     streamlistener.on_data = my_on_data   #callback function
     streamlistener.on_error = my_on_error
     stream = tweepy.Stream(auth, listener=streamlistener, secure=True)
-    stream.filter(languages=["en","es"],track=["a","the","i","to","and","is","in","it","you"])
+    stream.filter(languages=["en"],track=["a","the","i","to","and","is","in","it","you"])
 
     try:
 	stream.sample()

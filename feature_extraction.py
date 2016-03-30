@@ -6,10 +6,10 @@ import string
 from stop_words import get_stop_words
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-path = "C:\Users\lenovo\Desktop\eight_sem_major\\data\\"
+path = "C:\Users\lenovo\Desktop\major2\\data\\"
 #created a set of stop words of english and spanish text
 en_stop_words = set(get_stop_words('en'))
-es_stop_words = set(get_stop_words('spanish'))
+es_stop_words = set(get_stop_words('es'))
 
 #ISO 639-1 code for spanish is es
 
@@ -26,6 +26,9 @@ esTweet_ID_dict = {} #estweet pruned text id dictionary
 enID_hashtag_dict = {} #{ID: {hashtag1,2,...} or 'notag'}
 esID_hashtag_dict = {} #{ID: {hashtag1,2,...} or 'notag'}
 
+#in the form {token : occurence}
+enToken_count_dict = {}
+esToken_count_dict = {}
 
 def preprocess_text(text) : 
     text=text.lower() #convert the text to lowercase
@@ -38,7 +41,13 @@ def preprocess_text(text) :
     text="".join([ch for ch in text if ch not in string.punctuation])
     return text
         
-    
+def token_count(text_list,count_dict) : 
+    for text in text_list : 
+        for token in re.split('\s',text) : 
+            try : 
+                count_dict[token] +=1
+            except KeyError : 
+                count_dict[token] = 1
 
 
 #accessing files in the path director
@@ -69,7 +78,7 @@ for filename in os.listdir(path) :
             #remove stopwords            
             pruned_text = ' '.join([word for word in tmp_text.split() if word not in en_stop_words])
             #if pruned text is not empty
-            print pruned_text
+            #print pruned_text
             if(pruned_text!='') : 
                 # don't consider many ids have same text, overwrite previous ids sharing same text, save the last id
                 enTweet_ID_dict[pruned_text]=id
@@ -89,3 +98,41 @@ for filename in os.listdir(path) :
                             hashtag_dict[hashtag][lang]= set()
                         if not isRetweeted : 
                             hashtag_dict[hashtag][lang].add(id)
+        if lang=="es" : 
+            #print raw_text
+            tmp_text = preprocess_text(raw_text) #removes hashtag url and username
+            #print tmp_text            
+            #remove stopwords            
+            pruned_text = ' '.join([word for word in tmp_text.split() if word not in en_stop_words])
+            #if pruned text is not empty
+            #print pruned_text
+            if(pruned_text!='') : 
+                # don't consider many ids have same text, overwrite previous ids sharing same text, save the last id
+                esTweet_ID_dict[pruned_text]=id
+                #make a dictionary of hashtags present in a partcular id of tweet
+                #if there is not hashtag in the tweet then just insert notag
+                if hashtags == [] : 
+                    esID_hashtag_dict[id] = "notag"
+                #if there is any hashtag present in the tweet 
+                if hashtags != [] : 
+                    esID_hashtag_dict[id]=set()
+                    for hashtagObj in hashtags : 
+                        hashtag = hashtagObj["text"]
+                        esID_hashtag_dict[id].add(hashtag)
+                        if hashtag not in hashtag_dict :
+                            hashtag_dict[hashtag]={}
+                        if lang not in hashtag_dict[hashtag] : 
+                            hashtag_dict[hashtag][lang]= set()
+                        if not isRetweeted : 
+                            hashtag_dict[hashtag][lang].add(id)
+                            
+print "Total number of hashtag in hashtag_dict is : " + str(len(hashtag_dict))
+print "Total number of tweets in enlish is  : " + str(len(enTweet_ID_dict))
+
+token_count(enTweet_ID_dict.keys(),enToken_count_dict)
+token_count(esTweet_ID_dict.keys(),esToken_count_dict)
+
+print "Number of English Tokens : " + str(len(enToken_count_dict))
+print "Number of Spanish Tokens : " + str(len(esToken_count_dict))
+
+
