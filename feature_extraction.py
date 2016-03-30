@@ -50,6 +50,8 @@ def token_count(text_list,count_dict) :
                 count_dict[token] = 1
 
 
+
+
 #accessing files in the path director
 for filename in os.listdir(path) : 
     print "reading " + filename
@@ -134,5 +136,47 @@ token_count(esTweet_ID_dict.keys(),esToken_count_dict)
 
 print "Number of English Tokens : " + str(len(enToken_count_dict))
 print "Number of Spanish Tokens : " + str(len(esToken_count_dict))
+
+##############################################################################
+#############CALCULATING FREQUENCY OF TOKENS OF ENGLISH AND SPANISH###########
+##############################################################################
+
+enFrequency_set = set()
+esFrequency_set = set()
+
+#setting the threshold of frequency of english and spanish token
+
+enFrequency_threshold = int(0.0008*len(enToken_count_dict))
+esFrequency_threshold = int(0.004*len(esToken_count_dict))
+
+for key in enToken_count_dict : 
+    if enToken_count_dict[key]>=enFrequency_threshold:
+        enFrequency_set.add(key)
+
+for key in esToken_count_dict : 
+    if esToken_count_dict[key]>=esFrequency_threshold : 
+        esFrequency_set.add(key)
+print "Number of English token (Frequent) : " + str(len(enFrequency_set))
+print "Number of Spanish token (Frequent) : " + str(len(esFrequency_set))
+
+enInFrequency_threshold = 7
+esInFrequency_threshold = 5
+
+enInFrequency_set=set()
+esInFrequency_set = set()
+
+for key in enToken_count_dict : 
+    if enToken_count_dict[key]<=enInFrequency_threshold:
+        enInFrequency_set.add(key)
+
+for key in esToken_count_dict : 
+    if esToken_count_dict[key]<=esInFrequency_threshold:
+        esInFrequency_set.add(key)
+        
+print "Number of English token (InFrequent) : "+str(len(enInFrequency_set))
+print "Number of Spanish token (InFrequent) : " + str(len(esInFrequency_set))
+
+print "Filtered tweets in English (Frequent and infrequent) : " + str(len(enFrequency_set)+len(enInFrequency_set))
+print "Filtered tweets in Spanish (Frequent and infrequent) : " + str(len(esFrequency_set)+len(esInFrequency_set))
 
 
