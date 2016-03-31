@@ -5,6 +5,7 @@ import re
 import string
 from stop_words import get_stop_words
 from sklearn.feature_extraction.text import TfidfVectorizer
+from collections import OrderedDict
 
 path = "C:\Users\lenovo\Desktop\major2\\data\\"
 #created a set of stop words of english and spanish text
@@ -49,7 +50,16 @@ def token_count(text_list,count_dict) :
             except KeyError : 
                 count_dict[token] = 1
 
-
+def removal_freqinfreq(tweet_ID_dict,freq_set,infrequency_set) :
+    tweetid_ord_dict = OrderedDict()
+    tweetid_dict_new = {}
+    for key in tweet_ID_dict : 
+        new_key = ' '.join([token for token in key.split() if token not in freq_set and token not in infrequency_set])
+        if new_key != "" : 
+            tweetid = tweet_ID_dict[key]
+            tweetid_ord_dict[new_key] = tweetid
+            tweetid_dict_new[tweetid] = new_key
+    return tweetid_ord_dict, tweetid_dict_new
 
 
 #accessing files in the path director
@@ -180,3 +190,8 @@ print "Filtered tweets in English (Frequent and infrequent) : " + str(len(enFreq
 print "Filtered tweets in Spanish (Frequent and infrequent) : " + str(len(esFrequency_set)+len(esInFrequency_set))
 
 
+en_tweetid_ord_dict , en_idtweet_dict = removal_freqinfreq(enTweet_ID_dict,enFrequency_set,enInFrequency_set)
+es_tweetid_ord_dict , es_idtweet_dict = removal_freqinfreq(esTweet_ID_dict,esFrequency_set,esInFrequency_set)
+
+print "After removing frequent and infrequent tokens, english tokens count : " + str(len(en_tweetid_ord_dict))
+print "After removing frequent and infrequent tokens, spanish tokens count : " + str(len(es_tweetid_ord_dict))
