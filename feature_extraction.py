@@ -2,11 +2,12 @@ _author_ = "vivek ranjan"
 import os
 import json
 import re
+import pickle
 import string
 from stop_words import get_stop_words
 from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import OrderedDict
-
+from scipy import sparse,io
 path = "C:\Users\lenovo\Desktop\major2\\data\\"
 #created a set of stop words of english and spanish text
 en_stop_words = set(get_stop_words('en'))
@@ -60,6 +61,11 @@ def removal_freqinfreq(tweet_ID_dict,freq_set,infrequency_set) :
             tweetid_ord_dict[new_key] = tweetid
             tweetid_dict_new[tweetid] = new_key
     return tweetid_ord_dict, tweetid_dict_new
+
+def save_in_pickle(obj,name) :
+    with open('C:\Users\lenovo\Desktop\major2\\output\\'+name+'.pkl','wb') as f :
+        pickle.dump(obj,f,pickle.HIGHEST_PROTOCOL)
+
 
 
 #accessing files in the path director
@@ -209,13 +215,44 @@ esTweetId_rowId_Dict = TweetID2rowID_map(es_tweetid_ord_dict)
         
 print "The number of tokens in enTweetidorddict" + str(len(enTweetId_rowId_Dict))
 print "The number of tokens in esTweetidorddict" + str(len(esTweetId_rowId_Dict))
-        
-        
-        
-        
-        
-        
-        
-        
-        
- 
+
+
+save_in_pickle(enTweetId_rowId_Dict, 'en_TweetID_rowID_dicts')
+save_in_pickle(enTweetId_rowId_Dict, 'es_TweetID_rowID_dicts')
+save_in_pickle(enID_hashtag_dict, 'enID2hashtags')
+save_in_pickle(esID_hashtag_dict, 'esID2hashtags')
+
+enTweet_ID_dict.clear()
+esTweet_ID_dict.clear()
+#count of entoken and es token after removing frequent and infrequent  format is token:occurence
+
+enTokenCount_new_dict = {}
+esTokenCount_new_dict = {}
+
+
+token_count(en_tweetid_ord_dict,enTokenCount_new_dict) 
+token_count(es_tweetid_ord_dict,esTokenCount_new_dict)
+
+print "The number of english tokens after removing frequent and infrequent tokens is : " + str(len(enTokenCount_new_dict))
+print "The number of spanish tokens after removing frequent and infrequent tokens is : " + str(len(esTokenCount_new_dict))
+
+#constrcution of sparse matix for english tokens
+#in sparse matrix
+#the number of rows is the number of tweets
+#the number of columnse is the features
+en_tweet_sparse_mat = tfidf_vectorizer.fit_transform(en_tweetid_ord_dict.keys())
+print "The  english sparse matrix dimension is : "
+print en_tweet_sparse_mat.shape
+es_tweet_sparse_mat = tfidf_vectorizer.fit_transform(es_tweetid_ord_dict.keys())
+print "The spanish sparse matrix dimension is : "
+print es_tweet_sparse_mat.shape
+
+io.mmwrite("C:\Users\lenovo\Desktop\major2\\output\\en_tweet_sparseMatrix.mtx",en_tweet_sparse_mat)
+io.mmwrite("C:\Users\lenovo\Desktop\major2\\output\\es_tweet_sparseMatrix.mtx",es_tweet_sparse_mat)
+
+#all english tweet ids in the hashtag_dict that appear in new_entweetid_ordered dictionary
+
+estweetid_set = set()
+
+
+
