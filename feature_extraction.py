@@ -253,6 +253,28 @@ io.mmwrite("C:\Users\lenovo\Desktop\major2\\output\\es_tweet_sparseMatrix.mtx",e
 #all english tweet ids in the hashtag_dict that appear in new_entweetid_ordered dictionary
 
 estweetid_set = set()
+tweetgroupposition={}
+common_hashtag_count = 0
 
+for hashtag in hashtag_dict : 
+    if len(hashtag) > 2 and len(hashtag_dict[hashtag])==2 : 
+        common_hashtag_count += 1
+        for es_id in hashtag_dict[hashtag]['es'] : 
+            #build es tweet set
+            if es_id in es_idtweet_dict:
+                estweetid_set.add(es_id)
+                for en_id in hashtag_dict[hashtag]['en']:
+                    if en_id in en_idtweet_dict:
+                        if en_id not in tweetgroupposition:
+                            tweetgroupposition[en_id]=set() #initialize
+                        tweetgroupposition[en_id].add(es_id)
+                        
 
+new_estweetid = set(es_tweetid_ord_dict.values())
+intersection_esidset = new_estweetid.intersection(estweetid_set)
 
+print "The size of newes_tweetid_ord_dict and new_estweetid is " + str(len(es_tweetid_ord_dict))
+print "The size of es tweetid set is  : "+str(len(estweetid_set))
+print "The size of intersectesidset is : "+str(len(intersection_esidset))
+print "The  number of common hashtag with length>2 between english and spanish tweets is : "+str(common_hashtag_count)
+print "The number of en_ids in tweetPairs group_pos is : "+str(len(tweetgroupposition))
