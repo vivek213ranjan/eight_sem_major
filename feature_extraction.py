@@ -195,3 +195,27 @@ es_tweetid_ord_dict , es_idtweet_dict = removal_freqinfreq(esTweet_ID_dict,esFre
 
 print "After removing frequent and infrequent tokens, english tokens count : " + str(len(en_tweetid_ord_dict))
 print "After removing frequent and infrequent tokens, spanish tokens count : " + str(len(es_tweetid_ord_dict))
+
+###Mapping colId2tweettokens
+def TweetID2rowID_map(tweetid_ordict) : 
+    tweetIDrowID_dict = {}
+    tweetid_list=tweetid_ordict.values()
+    for index,tweetid in enumerate(tweetid_list) : 
+        tweetIDrowID_dict[tweetid]= index
+    return tweetIDrowID_dict
+        
+enTweetId_rowId_Dict = TweetID2rowID_map(en_tweetid_ord_dict)
+esTweetId_rowId_Dict = TweetID2rowID_map(es_tweetid_ord_dict)
+        
+print "The number of tokens in enTweetidorddict" + str(len(enTweetId_rowId_Dict))
+print "The number of tokens in esTweetidorddict" + str(len(esTweetId_rowId_Dict))
+        
+        
+        
+        
+        
+        
+        
+        
+        
+ 
